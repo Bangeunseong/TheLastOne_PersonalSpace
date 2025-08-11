@@ -23,7 +23,7 @@ Weapon/                        # Weapon 관련 코드 모음
 - 없을 시 기존 프리팹으로 선언된 방식으로 Initialize
 - 무기의 기본 스탯은 S.O.를 통해 선언되는 방식
 - 무기의 스탯 변화는 `UpdateStatValue` 메소드를 호출하여 선언된 프로퍼티 값을 업데이트 하여 기존 S.O. 값은 건드리지 않고 변경.
-- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/tree/master/Weapon/Scripts)
+- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/tree/master/Scripts/Weapon/Scripts)
 
 ```
 namespace _1.Scripts.Weapon.Scripts.Common
@@ -107,7 +107,7 @@ namespace _1.Scripts.Weapon.Scripts.Common
 - 각 무기 프리팹 안에 따로 선언되어 착용 및 탈착을 할 때 Instantiate, Destroy 방식이 아닌 Mesh를 키고 끄는 방식으로 작성
 - 착용을 할 때 Mesh를 키거나 IronSight와 같이 총에 기본으로 달린 것은 Rotation 값을 수정하여 표현
 - 착용 및 탈착을 할 때 무기의 스탯도 같이 업데이트
-- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/tree/master/Weapon/Scripts/WeaponDetails)
+- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/tree/master/Scripts/Weapon/Scripts/WeaponDetails)
 ```
 namespace _1.Scripts.Weapon.Scripts.WeaponDetails
 {

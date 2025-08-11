@@ -23,7 +23,7 @@ Player/                     # Player 관련 기능 모음 폴더
 - 없을 시 기존의 PlayerStatData를 베이스로 Initialize 진행
 - 데미지 처리는 PlayerDamageReceiver를 통해 선언된 부위별 DamageConverter들이 계산된 Damage를 PlayerCondition의 OnTakeDamage를 호출하여 전달하여 PlayerCondition에서 갱신
 - 플레이어의 조준 여부, 공격 여부, 움직일 수 있는 상태 여부 등 여러가지 상태들을 저장하여 전체적인 사격, 조준, 스킬 사용, 무기 교체 등 여러가지 기능의 수행조건을 부여.
-- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Player/Core/PlayerCondition.cs)
+- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Scripts/Player/Core/PlayerCondition.cs)
 ``` 
 namespace _1.Scripts.Entity.Scripts.Player.Core
 {
@@ -155,10 +155,10 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
 ```
 
 ### 2. 플레이어의 State 관리
-- [StateMachine.cs](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Player/StateMachineScripts/StateMachine.cs)를 상속받아 꼭 필요한 프로퍼티 및 States를 관리하는 공간
-- [StateMachine.cs](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Player/StateMachineScripts/StateMachine.cs)에 정의된 `ChangeState` 메소드를 통해 이곳에서 선언된 State로 전환이 가능
+- [StateMachine.cs](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Scripts/Player/StateMachineScripts/StateMachine.cs)를 상속받아 꼭 필요한 프로퍼티 및 States를 관리하는 공간
+- [StateMachine.cs](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Scripts/Player/StateMachineScripts/StateMachine.cs)에 정의된 `ChangeState` 메소드를 통해 이곳에서 선언된 State로 전환이 가능
 - 각 State에서는 PlayerStateMachine을 부를 수 있어 다른 State로 전환 시 선언된 PlayerStateMachine Parameter를 통해 `ChangeState` 메소드로 접근하여 전환.
-- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Player/StateMachineScripts/PlayerStateMachine.cs)
+- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Scripts/Player/StateMachineScripts/PlayerStateMachine.cs)
 ```
 namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts
 {
@@ -208,7 +208,7 @@ namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts
 - 없을 시 기존 프리팹으로 선언된 설정을 기준으로 보유 무기 및 파츠를 Initialize
 - 외부 라이브러리인 `SerializedDictionary`를 활용하여 Dictionary 형태로 무기의 보유 상태와 프리팹을 통해 선언된 무기들이 제대로 등록되는지 Inspector 창을 통해 확인(디버그에 용이)
 - 또한 나중에 DTO를 활용하여 Json으로 Serialize하여 저장하기도 용이
-- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Player/Core/PlayerWeapon.cs)
+- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Scripts/Player/Core/PlayerWeapon.cs)
 ```
 namespace _1.Scripts.Entity.Scripts.Player.Core
 {
@@ -311,7 +311,7 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
 - 없을 시 아이템 보유 수는 `0`으로 통일
 - 외부 라이브러리인 `SerializedDictionary`를 활용하여 Dictionary 형태로 아이템의 보유 상태를 Inspector 창을 통해 확인(디버그에 용이)
 - 또한 나중에 DTO를 활용하여 Json으로 Serialize하여 저장하기도 용이
-- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Player/Core/PlayerInventory.cs)
+- [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Scripts/Player/Core/PlayerInventory.cs)
 ```
 namespace _1.Scripts.Entity.Scripts.Player.Core
 {
