@@ -25,7 +25,7 @@ Weapon/                        # Weapon 관련 코드 모음
 - 무기의 스탯 변화는 `UpdateStatValue` 메소드를 호출하여 선언된 프로퍼티 값을 업데이트 하여 기존 S.O. 값은 건드리지 않고 변경.
 - [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/tree/master/Scripts/Weapon/Scripts)
 
-```
+```csharp
 namespace _1.Scripts.Weapon.Scripts.Common
 {
     public enum WeaponType
@@ -108,7 +108,7 @@ namespace _1.Scripts.Weapon.Scripts.Common
 - 착용을 할 때 Mesh를 키거나 IronSight와 같이 총에 기본으로 달린 것은 Rotation 값을 수정하여 표현
 - 착용 및 탈착을 할 때 무기의 스탯도 같이 업데이트
 - [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/tree/master/Scripts/Weapon/Scripts/WeaponDetails)
-```
+```csharp
 namespace _1.Scripts.Weapon.Scripts.WeaponDetails
 {
     public class WeaponPart : MonoBehaviour, IWearable

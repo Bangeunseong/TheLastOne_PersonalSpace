@@ -19,7 +19,7 @@ Item/                        # Item 관련 코드 모음
 - 항상 아이템은 [PlayerInventory.cs](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/blob/master/Scripts/Player/Core/PlayerInventory.cs)을 통해 선언되는데 이때 SaveFile(즉, DTO class)을 통해 현재 보유 상태를 선언.
 - 각 아이템의 효과는 `OnUse` 메소드를 오버라이드 하여 적용.
 - [Original Code](https://github.com/Bangeunseong/TheLastOne_PersonalSpace/tree/master/Scripts/Item)
-```
+```csharp
 namespace _1.Scripts.Item.Common
 {
     [Serializable] public class BaseItem : IItem
