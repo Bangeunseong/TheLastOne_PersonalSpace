@@ -60,8 +60,8 @@ namespace _1.Scripts.MiniGame
             isFinished = true;
             _ = EndGame_Async(isCanceled, isSuccess, duration);
         }
-        
-        protected virtual async UniTask StartCountdown_Async() { }
-        protected virtual async UniTask EndGame_Async(bool cancel, bool success, float duration) { }
+
+        protected virtual async UniTask StartCountdown_Async() { await UniTask.Yield(); }
+        protected virtual async UniTask EndGame_Async(bool cancel, bool success, float duration) { await UniTask.Yield(); }
     }
 }

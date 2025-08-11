@@ -1,5 +1,4 @@
-﻿using System;
-using _1.Scripts.Entity.Scripts.Player.Core;
+﻿using _1.Scripts.Entity.Scripts.Player.Core;
 using _1.Scripts.Interfaces.Player;
 using _1.Scripts.Item.Items;
 using _1.Scripts.Manager.Core;
@@ -113,7 +112,6 @@ namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts.States
                 speed = Mathf.Round(speed * 1000f) / 1000f;
             }
             else speed = targetSpeed;
-            playerCondition.CurrentSpeed = speed;
             
             // Set Animator Speed Parameter (Only Applied to Activated Animator)
             if (playerWeapon.WeaponAnimators[playerCondition.EquippedWeaponIndex].isActiveAndEnabled)
@@ -247,7 +245,7 @@ namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts.States
             
             if (!playerWeapon.AvailableWeapons.TryGetValue(WeaponType.Rifle, out var value)) return;
             if (!value) return;
-            playerCondition.OnSwitchWeapon(WeaponType.Rifle, 0.5f);
+            playerCondition.OnSwitchWeapon(WeaponType.Rifle, 0.25f);
         }
         private void OnSwitchToSecondary(InputAction.CallbackContext context)
         {
@@ -255,14 +253,14 @@ namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts.States
             
             if (playerWeapon.AvailableWeapons.TryGetValue(WeaponType.Pistol, out var pistol))
             {
-                if (pistol) { playerCondition.OnSwitchWeapon(WeaponType.Pistol, 0.5f); return; }
+                if (pistol) { playerCondition.OnSwitchWeapon(WeaponType.Pistol, 0.25f); return; }
                 if (!playerWeapon.AvailableWeapons.TryGetValue(WeaponType.SniperRifle, out var sniperRifle)) return;
                 if (sniperRifle) 
-                    playerCondition.OnSwitchWeapon(WeaponType.SniperRifle, 0.5f);
+                    playerCondition.OnSwitchWeapon(WeaponType.SniperRifle, 0.25f);
             } else if (playerWeapon.AvailableWeapons.TryGetValue(WeaponType.SniperRifle, out var sniperRifle))
             {
                 if (sniperRifle)
-                    playerCondition.OnSwitchWeapon(WeaponType.SniperRifle, 0.5f);
+                    playerCondition.OnSwitchWeapon(WeaponType.SniperRifle, 0.25f);
             }
         }
         private void OnSwitchToGrenade(InputAction.CallbackContext context)
@@ -271,7 +269,7 @@ namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts.States
 
             if (!playerWeapon.AvailableWeapons.TryGetValue(WeaponType.GrenadeLauncher, out var value)) return;
             if (!value) return;
-            playerCondition.OnSwitchWeapon(WeaponType.GrenadeLauncher, 1f);
+            playerCondition.OnSwitchWeapon(WeaponType.GrenadeLauncher, 0.25f);
         }
         private void OnSwitchToHackGun(InputAction.CallbackContext context)
         {
@@ -279,7 +277,7 @@ namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts.States
 
             if (!playerWeapon.AvailableWeapons.TryGetValue(WeaponType.HackGun, out var value)) return;
             if (!value) return;
-            playerCondition.OnSwitchWeapon(WeaponType.HackGun, 0.5f);
+            playerCondition.OnSwitchWeapon(WeaponType.HackGun, 0.25f);
         }
         private void OnSwitchByScroll(InputAction.CallbackContext context)
         {
@@ -287,7 +285,7 @@ namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts.States
             
             var value = context.ReadValue<Vector2>();
             WeaponType nextIndex = GetAvailableWeaponIndex(value.y, playerCondition.EquippedWeaponIndex);
-            playerCondition.OnSwitchWeapon(nextIndex, 0.5f);
+            playerCondition.OnSwitchWeapon(nextIndex, 0.25f);
         }
         private WeaponType GetAvailableWeaponIndex(float direction, WeaponType currentIndex)
         {

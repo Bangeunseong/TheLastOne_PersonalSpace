@@ -24,6 +24,10 @@ namespace _1.Scripts.Map.GameEvents
 
         [Header("Timeline")] 
         [SerializeField] private PlayableDirector timeline;
+
+        [Header("Trigger Settings")] 
+        [SerializeField] private bool isRelated;
+        [SerializeField] private SpawnEnemyByIndex relatedTrigger;
         
         private CoreManager coreManager;
         private bool isSpawned;
@@ -32,6 +36,16 @@ namespace _1.Scripts.Map.GameEvents
         {
             coreManager = CoreManager.Instance;
             killedCount = targetCount = 0;
+            
+            if (!coreManager.spawnManager.CurrentSpawnData.EnemySpawnPoints.TryGetValue(spawnIndex,
+                    out var spawnPoints))
+            {
+                Debug.LogError("Couldn't find spawn point, Target Count is currently zero!");
+                return;
+            }
+            foreach (var point in spawnPoints)
+                targetCount += point.Key is EnemyType.ShebotRifleDuo or EnemyType.ShebotSwordDogDuo ? point.Value.Count * 2 : point.Value.Count;
+
             
             DataTransferObject save = coreManager.gameManager.SaveData;
             if (save == null ||
@@ -43,24 +57,20 @@ namespace _1.Scripts.Map.GameEvents
             enabled = false;
         }
 
+        private void OnDisable()
+        {
+            GameEventSystem.Instance?.UnregisterListener(this);
+        }
+
         private void OnTriggerEnter(Collider other)
         {
-            if (isSpawned || !other.CompareTag("Player")) return;
-            
-            if (!coreManager.spawnManager.CurrentSpawnData.EnemySpawnPoints.TryGetValue(spawnIndex,
-                    out var spawnPoints))
-            {
-                Debug.LogError("Couldn't find spawn point, Target Count is currently zero!");
-                return;
-            }
+            if (!enabled || isSpawned || !other.CompareTag("Player")) return;
             
             Debug.Log("Spawned!");
             
             isSpawned = true;
-            foreach (var point in spawnPoints)
-                targetCount += point.Key is EnemyType.ShebotRifleDuo or EnemyType.ShebotSwordDogDuo ? point.Value.Count * 2 : point.Value.Count;
-
             if (invisibleWall) invisibleWall.SetActive(true);
+            if (isRelated && relatedTrigger) relatedTrigger.enabled = false;
             
             coreManager.spawnManager.SpawnEnemyBySpawnData(spawnIndex);
             GameEventSystem.Instance.RegisterListener(this);
@@ -77,7 +87,7 @@ namespace _1.Scripts.Map.GameEvents
             
             if (timeline) coreManager.soundManager.PlayBGM(BgmType.Stage2, 0);
             if (invisibleWall) invisibleWall.SetActive(false);
-            GameEventSystem.Instance.UnregisterListener(this);
+            
             enabled = false;
         }
         

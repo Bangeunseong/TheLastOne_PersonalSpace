@@ -1,4 +1,6 @@
-﻿namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts.States.Air
+﻿using UnityEngine;
+
+namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts.States.Air
 {
     public class JumpState : AirState
     {
@@ -23,7 +25,7 @@
         public override void Update()
         {
             base.Update();
-            if(stateMachine.Player.Controller.velocity.y <= 0) 
+            if(stateMachine.Player.Controller.velocity.y * Time.timeScale <= 0) 
                 stateMachine.ChangeState(stateMachine.FallState);
         }
     }

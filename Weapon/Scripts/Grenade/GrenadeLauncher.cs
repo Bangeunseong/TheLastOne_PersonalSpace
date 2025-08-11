@@ -114,6 +114,7 @@ namespace _1.Scripts.Weapon.Scripts.Grenade
                 {
                     IsAlreadyPlayedEmpty = true;
                     CoreManager.Instance.soundManager.PlaySFX(SfxType.GrenadeLauncherEmpty, ThrowPoint.position);
+                    CoreManager.Instance.uiManager.GetUI<WeaponUI>()?.PlayEmptyFlash();
                 }
                 return false;
             }

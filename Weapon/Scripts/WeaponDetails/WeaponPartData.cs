@@ -24,5 +24,8 @@ namespace _1.Scripts.Weapon.Scripts.WeaponDetails
         [field: SerializeField] public int IncreaseMaxAmmoCountInMagazine { get; private set; }
         [field: SerializeField] public float ReduceRecoilRate { get; private set; }
         [field: SerializeField] public bool IsBasicPart { get; private set; }
+        
+        [field: SerializeField] public string NameKey { get; private set; }
+        [field: SerializeField] public string DescKey { get; private set; }
     }
 }

@@ -52,17 +52,10 @@ namespace _1.Scripts.Manager.Subs
 
         public void TriggerDialogue(int key)
         {
-            if (!dialogueDataDict.TryGetValue(key, out var data)) 
-            {
-                Debug.LogWarning($"Dialogue key not found: {key}");
-                return;
-            }
-
+            if (CoreManager.Instance.gameManager.IsGamePaused) return;
+            if (!dialogueDataDict.TryGetValue(key, out var data)) return;
             var dialogueUI = coreManager.uiManager.GetUI<DialogueUI>();
-            if (dialogueUI)
-                dialogueUI.ShowSequence(data.sequence);
-            else
-                Debug.LogWarning("DialogueUI is not available.");
+            if (dialogueUI) dialogueUI.ShowSequence(data.sequence);
         }
     }
 }

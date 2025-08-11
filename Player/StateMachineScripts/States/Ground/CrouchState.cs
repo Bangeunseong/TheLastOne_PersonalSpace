@@ -16,6 +16,10 @@ namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts.States.Ground
             playerCondition.OnCrouch(true, 0.1f);
             base.Enter();
             StartAnimation(stateMachine.Player.AnimationData.CrouchParameterHash);
+            
+            playerCondition.OnRecoverStamina(
+                playerCondition.StatData.recoverRateOfStamina_Crouch * playerCondition.StatData.interval, 
+                playerCondition.StatData.interval);
         }
 
         public override void Exit()
@@ -31,7 +35,15 @@ namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts.States.Ground
             playerCondition.OnCrouch(false, 0.1f);
             stateMachine.ChangeState(stateMachine.IdleState);
         }
-        
+
+        protected override void OnRunStarted(InputAction.CallbackContext context)
+        {
+            base.OnRunStarted(context);
+            if (!playerCondition.IsPlayerHasControl) return;
+            playerCondition.OnCrouch(false, 0.1f);
+            stateMachine.ChangeState(stateMachine.RunState);
+        }
+
         public override void Update()
         {
             base.Update();

@@ -58,7 +58,7 @@ namespace _1.Scripts.MiniGame.AlphabetMatch
             // Minigame 초입
             if (!IsPlaying)
             {
-                if (Input.GetKeyDown(KeyCode.Return))
+                if (Input.GetKeyDown(KeyCode.Space))
                 {
                     _ = StartCountdown_Async();
                     IsCounting = IsPlaying = true;

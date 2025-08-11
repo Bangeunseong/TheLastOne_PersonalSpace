@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _1.Scripts.Dialogue;
 using _1.Scripts.Entity.Scripts.Player.Core;
 using _1.Scripts.Interfaces.Player;
 using _1.Scripts.Manager.Core;
@@ -17,6 +18,9 @@ namespace _1.Scripts.Weapon.Scripts.Common
         [field: SerializeField] public WeaponType Type { get; private set; }
         [field: SerializeField] public int Id { get; private set; }
         [field: SerializeField] public int InstanceId { get; private set; }
+
+        private static bool hasFirstPartPicked = false;
+        private const int FirstPartPickupDialogueKey = 24;
 
         public event Action OnPicked;
         
@@ -68,11 +72,17 @@ namespace _1.Scripts.Weapon.Scripts.Common
             if (!player.PlayerWeapon.Weapons.TryGetValue(Type, out var value)) return;
             value.TryCollectWeaponPart(Id);
             
+            if (!hasFirstPartPicked)
+            {
+                hasFirstPartPicked = true;
+                CoreManager.Instance.dialogueManager.TriggerDialogue(FirstPartPickupDialogueKey);
+            }
+            
             OnPicked?.Invoke();
             CoreManager.Instance.spawnManager.DynamicSpawnedParts.Remove(InstanceId);
             CoreManager.Instance.objectPoolManager.Release(gameObject);
         }
-
+        
         public void OnCancelInteract() { }
     }
 }

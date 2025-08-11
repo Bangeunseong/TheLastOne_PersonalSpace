@@ -84,10 +84,11 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
             Service.Log($"Attempting to select {itemType}");
             if (!Items.ContainsKey(itemType) || Items[itemType].CurrentItemCount <= 0)
             {
-                CoreManager.Instance.uiManager.GetUI<InGameUI>()?.ShowToast("You can't select this item.");
+                CoreManager.Instance.uiManager.GetUI<InGameUI>()?.ShowToast("FailSelect_Key");
                 return;
             }
             CurrentItem = itemType;
+            CoreManager.Instance.uiManager.GetUI<InGameUI>()?.ShowToast(Items[itemType].ItemData);
         }
 
         public bool OnRefillItem(ItemType itemType)
@@ -101,7 +102,7 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
             Service.Log($"Attempting to use {CurrentItem}.");
             if (!Items.ContainsKey(CurrentItem) || Items[CurrentItem].CurrentItemCount <= 0)
             {
-                CoreManager.Instance.uiManager.GetUI<InGameUI>()?.ShowToast("You can't use this item.");
+                CoreManager.Instance.uiManager.GetUI<InGameUI>()?.ShowToast("FailUse_Key");
                 return false;
             }
             switch (Items[CurrentItem])

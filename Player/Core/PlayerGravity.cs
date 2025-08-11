@@ -2,8 +2,17 @@
 
 namespace _1.Scripts.Entity.Scripts.Player.Core
 {
+    public enum GroundType
+    {
+        Steel,
+        Grass,
+    }
+    
     public class PlayerGravity : MonoBehaviour
     {
+        [field: Header("Current GroundType")]
+        [field: SerializeField] public GroundType CurrentGroundType { get; private set; } = GroundType.Steel;
+        
         [field: Header("Gravity Settings")]
         [field: SerializeField] public float Gravity { get; private set; } = -9.81f;
         [field: SerializeField] public float GroundedOffset { get; private set; } = -0.24f;
@@ -28,6 +37,12 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
                 transform.position.z);
             IsGrounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore);
+
+            if (!IsGrounded) return;
+            if (!Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 0.5f, GroundLayers)) return;
+            if (hit.collider.CompareTag("Steel")) CurrentGroundType = GroundType.Steel;
+            else if (hit.collider.CompareTag("Grass")) CurrentGroundType = GroundType.Grass;
+            else CurrentGroundType = GroundType.Steel;
         }
         
         public void Jump(float jumpForce)

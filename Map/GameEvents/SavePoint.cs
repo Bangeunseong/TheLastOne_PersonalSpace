@@ -33,7 +33,7 @@ namespace _1.Scripts.Map.GameEvents
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.CompareTag("Player")) return;
+            if (!enabled || !other.CompareTag("Player")) return;
             if (!other.TryGetComponent(out Player player)) return;
             
             player.PlayerCondition.UpdateLastSavedTransform();

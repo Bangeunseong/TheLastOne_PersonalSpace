@@ -15,7 +15,8 @@ namespace _1.Scripts.Item.Common
     [Serializable] public class ItemData : ScriptableObject
     {
         [Header("Item Settings")] 
-        public string Name;
+        public string NameKey;
+        public string DescriptionKey;
         public ItemType ItemType;
         public bool IsPlayerMovable;
         public int Value;

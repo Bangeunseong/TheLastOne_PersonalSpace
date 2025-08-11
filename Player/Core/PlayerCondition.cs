@@ -58,6 +58,13 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
         [field: SerializeField] public float JumpForce { get; private set; }
         [field: SerializeField] public float RotationDamping { get; private set; } = 10f;  // Rotation Speed
 
+        [field: Header("Current Mouse Sensitivity")]
+        [field: SerializeField] public float LookSensitivity_H { get; private set; } = 0.1f;
+
+        [field: SerializeField] public float LookSensitivity_V { get; private set; } = 0.06f;
+        [field: SerializeField] public float AimSensitivity_H { get; private set; } = 0.1f;
+        [field: SerializeField] public float AimSensitivity_V { get; private set; } = 0.1f;
+        
         [field: Header("Speed Modifiers")]
         [field: SerializeField] public float CrouchSpeedModifier { get; private set; }
         [field: SerializeField] public float WalkSpeedModifier { get; private set; }
@@ -99,6 +106,8 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
         private CancellationTokenSource staminaCTS;
         private CancellationTokenSource crouchCTS;
         private CancellationTokenSource bleedCTS;
+
+        private bool health75, health50, health25;
         
         // Action events
         [CanBeNull] public event Action OnDamage, OnDeath;
@@ -171,9 +180,22 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
             WalkSpeedModifier = StatData.walkMultiplier;
             RunSpeedModifier = StatData.runMultiplier;
             AirSpeedModifier = StatData.airMultiplier;
+            
+            UpdateMouseSensitivity(PlayerPrefs.GetFloat("LookSensitivity_H", 0.1f), PlayerPrefs.GetFloat("LookSensitivity_V", 0.06f),
+                PlayerPrefs.GetFloat("AimSensitivity_H", 0.1f), PlayerPrefs.GetFloat("AimSensitivity_V", 0.06f));
+            ChangeMouseSensitivity(false);
 
             OnInstinctRecover_Idle();
             player.Controller.enabled = true;
+        }
+
+        public void UpdateMouseSensitivity(float lookSensitivity_H, float lookSensitivity_V, 
+            float aimSensitivity_H, float aimSensitivity_V)
+        {
+            LookSensitivity_H = lookSensitivity_H;
+            LookSensitivity_V = lookSensitivity_V;
+            AimSensitivity_H = aimSensitivity_H;
+            AimSensitivity_V = aimSensitivity_V;
         }
 
         public void UpdateLowPassFilterValue(float value)
@@ -202,6 +224,23 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
             if (CurrentShield <= 0)
             {
                 CurrentHealth = Mathf.Max(CurrentHealth - damage, 0);
+                
+                switch (CurrentHealth)
+                {
+                    case <= 75 when !health75:
+                        health75 = true; 
+                        coreManager.soundManager.PlayUISFX(SfxType.PlayerHit);
+                        break;
+                    case <= 50 when !health50:
+                        health50 = true; health75 = true; 
+                        coreManager.soundManager.PlayUISFX(SfxType.PlayerHit);
+                        break;
+                    case <= 25 when !health25:
+                        health25 = true; health50 = true; health75 = true; 
+                        coreManager.soundManager.PlayUISFX(SfxType.PlayerHit);
+                        break;
+                }
+                
                 if (itemCTS != null) CancelItemUsage();
                 OnRecoverInstinctGauge(InstinctGainType.Hit);
                 player.PlayerInteraction.OnCancelInteract();
@@ -211,11 +250,14 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
                 if (CurrentShield < damage)
                 {
                     CurrentHealth = Mathf.Max(CurrentHealth + CurrentShield - damage, 0);
+                    coreManager.soundManager.PlayUISFX(SfxType.PlayerShieldHit);
+                    coreManager.soundManager.PlayUISFX(SfxType.PlayerHit);
                     if (itemCTS != null) CancelItemUsage();
                     OnRecoverInstinctGauge(InstinctGainType.Hit);
                     player.PlayerInteraction.OnCancelInteract();
                 }
                 CurrentShield = Mathf.Max(CurrentShield - damage, 0);
+                
                 coreManager.uiManager.GetUI<InGameUI>()?.UpdateArmorSlider(CurrentShield, MaxShield);
             }
             
@@ -244,6 +286,20 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
             }
         }
 
+        private void ChangeMouseSensitivity(bool isAim)
+        {
+            if (isAim)
+            {
+                player.Pov.m_HorizontalAxis.m_MaxSpeed = AimSensitivity_H; 
+                player.Pov.m_VerticalAxis.m_MaxSpeed = AimSensitivity_V;
+            }
+            else
+            {
+                player.Pov.m_HorizontalAxis.m_MaxSpeed = LookSensitivity_H;
+                player.Pov.m_VerticalAxis.m_MaxSpeed = LookSensitivity_V;
+            }
+        }
+
         /// <summary>
         /// Recover Health Point
         /// </summary>
@@ -252,6 +308,11 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
         {
             if (IsDead) return;
             CurrentHealth = Mathf.Min(CurrentHealth + value, MaxHealth);
+            
+            if (CurrentHealth >= 25) health25 = false;
+            if (CurrentHealth >= 50) health50 = false;
+            if (CurrentHealth >= 75) health75 = false;
+            
             UpdateLowPassFilterValue(LowestPoint + (HighestPoint - LowestPoint) * ((float)CurrentHealth / MaxHealth));
             coreManager.uiManager.GetUI<InGameUI>()?.UpdateHealthSlider(CurrentHealth, MaxHealth);
         }
@@ -534,6 +595,7 @@ namespace _1.Scripts.Entity.Scripts.Player.Core
         /* - Aim 관련 메소드 - */
         public void OnAim(bool isAim, float targetFoV, float transitionTime)
         {
+            ChangeMouseSensitivity(isAim);
             aimCTS?.Cancel(); aimCTS?.Dispose();
             aimCTS = CancellationTokenSource.CreateLinkedTokenSource(coreManager.PlayerCTS.Token);
             _ = AimAsync(isAim, targetFoV, transitionTime, aimCTS.Token);

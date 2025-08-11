@@ -41,6 +41,8 @@ namespace _1.Scripts.Entity.Scripts.Player.Data
         public float consumeRateOfStamina;
         public float recoverRateOfStamina_Idle;
         public float recoverRateOfStamina_Walk;
+        public float recoverRateOfStamina_Crouch;
+        public float recoverRateOfStamina_CrouchWalk;
         public float interval;
     }
 }

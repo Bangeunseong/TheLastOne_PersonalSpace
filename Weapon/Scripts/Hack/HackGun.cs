@@ -118,6 +118,7 @@ namespace _1.Scripts.Weapon.Scripts.Hack
                 if (!IsEmpty || IsAlreadyPlayedEmpty) return false;
                 IsAlreadyPlayedEmpty = true;
                 CoreManager.Instance.soundManager.PlaySFX(SfxType.HackGunEmpty, BulletSpawnPoint.position);
+                CoreManager.Instance.uiManager.GetUI<WeaponUI>()?.PlayEmptyFlash();
                 return false;
             }
             

@@ -73,7 +73,7 @@ namespace _1.Scripts.MiniGame.ChargeBars
 
             if (!IsPlaying)
             {
-                if (Input.GetKeyDown(KeyCode.Return))
+                if (Input.GetKeyDown(KeyCode.Space))
                 {
                     _ = StartCountdown_Async(); 
                     IsCounting = IsPlaying = true; 

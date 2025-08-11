@@ -132,6 +132,7 @@ namespace _1.Scripts.Weapon.Scripts.Guns
                         WeaponType.Rifle => SfxType.RifleEmpty,
                         _ => SfxType.SniperRifleEmpty
                     }, BulletSpawnPoint.position);
+                CoreManager.Instance.uiManager.GetUI<WeaponUI>()?.PlayEmptyFlash();
                 return false;
             }
             

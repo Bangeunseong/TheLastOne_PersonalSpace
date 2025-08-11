@@ -12,7 +12,7 @@ namespace _1.Scripts.Entity.Scripts.Player.StateMachineScripts.States.Ground
         
         public override void Enter()
         {
-            stateMachine.MovementSpeedModifier = 0f;
+            // stateMachine.MovementSpeedModifier = 0f;
             base.Enter();
             
             playerCondition.OnRecoverStamina(

@@ -2,11 +2,11 @@ using System;
 using System.Threading.Tasks;
 using _1.Scripts.Entity.Scripts.Player.Core;
 using _1.Scripts.Manager.Core;
-using _1.Scripts.UI.Common;
 using _1.Scripts.UI.Loading;
 using _1.Scripts.UI.Lobby;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
 
@@ -33,7 +33,8 @@ namespace _1.Scripts.Manager.Subs
         private bool isKeyPressed;
         private UIManager uiManager;
         private CoreManager coreManager;
-        
+
+
         // Properties
         public bool IsLoading { get; private set; }
         public float LoadingProgress { get; set; }
@@ -71,7 +72,7 @@ namespace _1.Scripts.Manager.Subs
                 await coreManager.objectPoolManager.DestroyUnusedStagePools(PreviousScene.ToString());
                 await coreManager.resourceManager.UnloadAssetsByLabelAsync(PreviousScene.ToString());
                 CurrentScene = sceneName;
-                if (CurrentScene == SceneType.IntroScene)
+                if (CurrentScene is SceneType.IntroScene or SceneType.EndingScene)
                 {
                     await coreManager.objectPoolManager.DestroyUnusedStagePools("Common");
                     await coreManager.resourceManager.UnloadAssetsByLabelAsync("Common");
@@ -105,7 +106,7 @@ namespace _1.Scripts.Manager.Subs
             }
             
             // Load Resources & Create Pool used in Current Scene
-            await coreManager.resourceManager.LoadAssetsByLabelAsync(CurrentScene.ToString());
+            if (CurrentScene != SceneType.EndingScene) await coreManager.resourceManager.LoadAssetsByLabelAsync(CurrentScene.ToString());
             coreManager.dialogueManager.CacheDialogueData();
             coreManager.soundManager.CacheSoundGroup();
             await coreManager.soundManager.LoadClips();
@@ -136,7 +137,11 @@ namespace _1.Scripts.Manager.Subs
             // Wait for user input
             isInputAllowed = true;
             loadingUI.UpdateLoadingProgress(LoadingProgress);
-            loadingUI.UpdateProgressText("Press any key to continue...");
+            LocalizedString loadingString = new LocalizedString("New Table", "LoadingText_Key");
+            loadingString.StringChanged += value =>
+            {
+                loadingUI.UpdateProgressText(value);
+            };
             await WaitForUserInput();
             isInputAllowed = false;
             isKeyPressed = false;
@@ -172,7 +177,7 @@ namespace _1.Scripts.Manager.Subs
                     uiManager.HideUI<LoadingUI>(); uiManager.ShowUI<LobbyUI>();
                     return;
                 case SceneType.EndingScene: 
-                    coreManager.uiManager.GetUI<EndingCreditUI>().Show();
+                    uiManager.HideUI<LoadingUI>(); PlayEndingCutScene(); 
                     return;
             }
             
@@ -201,9 +206,6 @@ namespace _1.Scripts.Manager.Subs
                 case SceneType.Stage2:
                     PlayCutSceneOrResumeGame(player); break;
             }
-            
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
         
         private async Task WaitForUserInput()
@@ -228,9 +230,15 @@ namespace _1.Scripts.Manager.Subs
             PlayCutScene(playable);
         }
 
+        private void PlayEndingCutScene()
+        {
+            var endingGo = GameObject.Find("IntroOpening");
+            var playable = endingGo?.GetComponentInChildren<PlayableDirector>();
+            PlayCutScene(playable);
+        }
+        
         private void PlayCutScene(PlayableDirector director)
         {
-            
             if (CurrentScene == SceneType.Stage1)
             {
                 director.played += OnCutsceneStarted_Stage1Intro;
@@ -240,6 +248,10 @@ namespace _1.Scripts.Manager.Subs
             {
                 director.played += OnCutsceneStarted_Stage2Intro;
                 director.stopped += OnCutsceneStopped_Stage2Intro;
+            } 
+            else if (CurrentScene == SceneType.EndingScene)
+            {
+                director.stopped += OnCutsceneStopped_Ending;
             }
             director.Play();
         }
@@ -250,6 +262,8 @@ namespace _1.Scripts.Manager.Subs
             player.PlayerCondition.OnEnablePlayerMovement();
             if (!coreManager.uiManager.ShowHUD()) throw new MissingReferenceException();
             if (spawn) coreManager.spawnManager.SpawnEnemyBySpawnData(index);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
 
         private void ChangeBGM(int index)
@@ -284,6 +298,8 @@ namespace _1.Scripts.Manager.Subs
             coreManager.spawnManager.SpawnEnemyBySpawnData(1);
             coreManager.gameManager.ResumeGame();
             coreManager.uiManager.OnCutsceneStopped(director);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             
             director.played -= OnCutsceneStarted_Stage1Intro;
             director.stopped -= OnCutsceneStopped_Stage1Intro;
@@ -298,9 +314,17 @@ namespace _1.Scripts.Manager.Subs
             ChangeBGM(0);
             coreManager.gameManager.ResumeGame();
             coreManager.uiManager.OnCutsceneStopped(director);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             
             director.played -= OnCutsceneStarted_Stage1Intro;
             director.stopped -= OnCutsceneStopped_Stage2Intro;
+        }
+
+        private void OnCutsceneStopped_Ending(PlayableDirector director)
+        {
+            coreManager.MoveToIntroScene();
+            director.stopped -= OnCutsceneStopped_Ending;
         }
     }
 }

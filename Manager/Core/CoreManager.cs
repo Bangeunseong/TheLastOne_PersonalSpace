@@ -182,7 +182,7 @@ namespace _1.Scripts.Manager.Core
             timeScaleManager.Reset();
             uiManager.ResetUIByGroup(UIType.InGame);
             gameManager.ExitGame();
-            
+             
             _ = LoadDataAndScene();
         }
         

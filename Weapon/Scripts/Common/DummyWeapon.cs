@@ -90,6 +90,8 @@ namespace _1.Scripts.Weapon.Scripts.Common
                         WeaponType.Pistol => 30,
                         WeaponType.Rifle => 60,
                         WeaponType.SniperRifle => 10,
+                        WeaponType.Punch => 0,
+                        _ => throw new ArgumentOutOfRangeException()
                     });
                 if (!result) return;
             }
